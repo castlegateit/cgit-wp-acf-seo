@@ -16,7 +16,7 @@ License: MIT
  * Check for ACF
  */
 if ( ! function_exists('get_field') ) {
-    exit();
+    return;
 }
 
 /**
