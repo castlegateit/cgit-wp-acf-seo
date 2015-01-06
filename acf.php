@@ -154,7 +154,7 @@ if(function_exists("register_field_group"))
 				'key' => 'field_5284dd566a323',
 				'label' => 'Registered number',
 				'name' => 'registered_number',
-				'type' => 'text',
+				'type' => 'number',
 				'required' => 0,
 				'default_value' => '',
 				'placeholder' => '',

@@ -1,3 +1,3 @@
 # Castlegate IT WP ACF SEO #
 
-Simple SEO fields for titles, headings, and descriptions. The title and description fields (`seo_title` and `seo_description`) are displayed automatically. The heading `seo_heading` must be added the (child) theme template manually. Requires [Advanced Custom Fields](http://www.advancedcustomfields.com/). The plug-in also automatically adds fields for a 'Options' page if ACF Options is installed.
+Simple SEO fields for titles, headings, and descriptions. The title and description fields (`seo_title` and `seo_description`) are displayed automatically. The heading `seo_heading` must be added the (child) theme template manually. Requires [Advanced Custom Fields](http://www.advancedcustomfields.com/).
