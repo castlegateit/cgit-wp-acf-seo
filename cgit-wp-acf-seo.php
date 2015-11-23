@@ -84,8 +84,8 @@ function cgit_seo_title ($title) {
         return $title;
     }
 
-    if (get_field('seo_title') = $seo_title) {
-        $title = $seo_title;
+    if (get_field('seo_title')) {
+        $title = get_field('seo_title');
     }
 
     return $title;
@@ -101,8 +101,9 @@ function cgit_seo_description () {
         return;
     }
 
-    if (get_field('seo_description') = $seo_description) {
-        echo '<meta name="description" content="'. $seo_description . '" />';
+    if (get_field('seo_description')) {
+        echo '<meta name="description" content="'
+            . get_field('seo_description') . '" />';
     }
 }
 
@@ -121,8 +122,8 @@ function cgit_seo_heading($sep = ': ') {
     if (cgit_seo_is_post()) {
         $heading .= $sep . get_the_title();
 
-        if (get_field('seo_heading') = $seo_heading) {
-            $heading = $seo_heading;
+        if (get_field('seo_heading')) {
+            $heading = get_field('seo_heading');
         }
     }
 
