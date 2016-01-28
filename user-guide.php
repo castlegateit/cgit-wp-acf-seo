@@ -1,5 +1,3 @@
-<h3>SEO</h3>
-
 <p>The search engine optimisation (SEO) fields on the right of the editor screen allow you to customise the text used by search engines to index the site. These are entirely optional. If you do not enter anything in these fields, default values will generated using the page and site title.</p>
 
 <ul>

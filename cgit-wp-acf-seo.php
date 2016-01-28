@@ -60,14 +60,20 @@ acf_add_local_field_group(array(
 /**
  * Add entry in user guide
  */
-function cgit_seo_user_guide($sections) {
+add_action('plugins_loaded', function() {
+    if (!class_exists('Cgit\UserGuide')) {
+        return;
+    }
+
+    $guide = Cgit\UserGuide::getInstance();
     $file = dirname(__FILE__) . '/user-guide.php';
-    $sections['cgit-wp-acf-seo'] = Cgit\UserGuide::getFile($file);
 
-    return $sections;
-}
-
-add_filter('cgit_user_guide_sections', 'cgit_seo_user_guide', 100);
+    $guide->addSection('cgit-wp-acf-seo', [
+        'heading' => 'Search engine optimisation',
+        'content' => $guide::getFile($file),
+        'order' => 100,
+    ]);
+}, 20);
 
 /**
  * Is this a post (or page)?
