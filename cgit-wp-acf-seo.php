@@ -127,5 +127,5 @@ function cgit_seo_heading($sep = ': ') {
         }
     }
 
-    return $seo_heading;
+    return $heading;
 }
