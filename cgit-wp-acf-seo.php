@@ -22,40 +22,42 @@ if (!function_exists('acf_add_local_field_group')) {
 /**
  * Add SEO fields
  */
-acf_add_local_field_group(array(
-    'key' => 'cgit_wp_seo',
-    'title' => 'SEO',
-    'fields' => array(
-        array(
-            'key' => 'seo_title',
-            'name' => 'seo_title',
-            'label' => 'Title',
-            'type' => 'text',
-        ),
-        array(
-            'key' => 'seo_heading',
-            'name' => 'seo_heading',
-            'label' => 'Heading',
-            'type' => 'text',
-        ),
-        array(
-            'key' => 'seo_description',
-            'name' => 'seo_description',
-            'label' => 'Description',
-            'type' => 'text',
-        ),
-    ),
-    'location' => array(
-        array(
+add_action('acf/init', function() {
+    acf_add_local_field_group(array(
+        'key' => 'cgit_wp_seo',
+        'title' => 'SEO',
+        'fields' => array(
             array(
-                'param' => 'post_type',
-                'operator' => '!=',
-                'value' => '0', // Show on all posts
+                'key' => 'seo_title',
+                'name' => 'seo_title',
+                'label' => 'Title',
+                'type' => 'text',
+            ),
+            array(
+                'key' => 'seo_heading',
+                'name' => 'seo_heading',
+                'label' => 'Heading',
+                'type' => 'text',
+            ),
+            array(
+                'key' => 'seo_description',
+                'name' => 'seo_description',
+                'label' => 'Description',
+                'type' => 'text',
             ),
         ),
-    ),
-    'position' => 'side',
-));
+        'location' => array(
+            array(
+                array(
+                    'param' => 'post_type',
+                    'operator' => '!=',
+                    'value' => '0', // Show on all posts
+                ),
+            ),
+        ),
+        'position' => 'side',
+    ));
+});
 
 /**
  * Add entry in user guide
