@@ -9,6 +9,6 @@
 </ul>
 
 <figure>
-    <img src="<?php echo plugin_dir_url(__FILE__); ?>images/fields.png" alt="" />
+    <img src="<?= CGIT_ACF_SEO_URL ?>/content/images/fields.png" alt="" />
     <figcaption>The SEO fields in the WordPress admin panel. These will appear on the right of the screen when you are editing a post or page.</figcaption>
 </figure>
