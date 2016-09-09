@@ -124,7 +124,9 @@ class AcfSeo
      */
     public function writeDescription()
     {
-        $seo_description = get_field('seo_description');
+        $postID = $this->getID();
+
+        $seo_description = get_field('seo_description', $postID);
 
         if (!$this->isPost() || !$seo_description) {
             return;
@@ -140,7 +142,9 @@ class AcfSeo
      */
     public function getHeading()
     {
-        $seo_heading = get_field('seo_heading');
+        $postID = $this->getID();
+
+        $seo_heading = get_field('seo_heading', $postID);
 
         if (!$this->isPost()) {
             return false;
@@ -153,6 +157,17 @@ class AcfSeo
         return $seo_heading;
     }
 
+    private function getID()
+    {
+        $postID = $post->ID;
+
+        if (is_home()) {
+            $postID = get_option('page_for_posts');
+        }
+
+        return $postID;
+    }
+
     /**
      * Is this is a post or page?
      *
@@ -160,6 +175,6 @@ class AcfSeo
      */
     private function isPost()
     {
-        return is_single() || is_page();
+        return is_single() || is_page() || is_home() && get_option('page_for_posts');
     }
 }
