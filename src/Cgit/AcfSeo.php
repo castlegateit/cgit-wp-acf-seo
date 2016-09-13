@@ -19,6 +19,13 @@ class AcfSeo
     private $indexId;
 
     /**
+     * Default site description
+     *
+     * @var string
+     */
+    private $defaultDescription = 'Just another WordPress site';
+
+    /**
      * Private constructor
      *
      * @return void
@@ -34,7 +41,8 @@ class AcfSeo
         add_filter('cgit_user_guide_sections', [$this, 'registerGuide'], 100);
 
         // Apply optimizations
-        add_filter('wp_title', [$this, 'optimizeTitle'], 999);
+        add_filter('wp_title', [$this, 'optimizeTitle'], 999, 3);
+        add_filter('wp_title', [$this, 'sanitizeTitle'], 999, 3);
         add_action('wp_head', [$this, 'writeDescription'], 0);
     }
 
@@ -112,10 +120,15 @@ class AcfSeo
     /**
      * Optimize title
      *
+     * Allows the title to be overridden by the custom title field for single
+     * posts and pages.
+     *
      * @param string $title
+     * @param string $sep
+     * @param string $location
      * @return string
      */
-    public function optimizeTitle($title)
+    public function optimizeTitle($title, $sep, $location)
     {
         $seo_title = get_field('seo_title', $this->getId());
 
@@ -127,7 +140,32 @@ class AcfSeo
     }
 
     /**
+     * Strip default description from generate title
+     *
+     * Removes the default description and its adjacent separator character from
+     * the HTML title.
+     *
+     * @param string $title
+     * @param string $sep
+     * @param string $location
+     * @return string
+     */
+    public function sanitizeTitle($title, $sep, $location)
+    {
+        $pattern = $this->defaultDescription . ' ' . $sep;
+
+        if ($location == 'right') {
+            $pattern = $sep . ' ' . $this->defaultDescription;
+        }
+
+        return str_replace($pattern, '', $title);
+    }
+
+    /**
      * Write optimized description
+     *
+     * Adds an HTML meta element to the head of the page containing a
+     * description based on the value of the custom description field.
      *
      * @return void
      */
@@ -145,21 +183,66 @@ class AcfSeo
     /**
      * Return optimized heading
      *
+     * This can be used to write the main page heading, which might be placed in
+     * the alt attribute of the site logo. The default heading, which is used
+     * when the SEO heading field is empty or when you are viewing something
+     * other than a post or a page, can be any string, including an empty one.
+     * However, if it is null (the default default), then the heading will be
+     * generated based on the post or page title (if applicable), the site
+     * description (if available and not set to the default value) and the site
+     * name.
+     *
+     * @param string $default
      * @return string
      */
-    public function getHeading()
+    public function getHeading($default = null)
     {
         $seo_heading = get_field('seo_heading', $this->getId());
 
-        if (!$this->isPost()) {
-            return false;
+        // The default heading can be any string, including an empty string. If
+        // there is really no default heading, generate one from the post or
+        // page title, the site description, and the site name.
+        if (is_null($default)) {
+            $default = $this->getDefaultHeading();
         }
 
-        if (!$seo_heading) {
-            return get_the_title();
+        // If this is something that can be optimized, check for the SEO heading
+        // field and return it if possible.
+        if ($this->isPost() && $seo_heading) {
+            return $seo_heading;
         }
 
-        return $seo_heading;
+        return $default;
+    }
+
+    /**
+     * Return default heading
+     *
+     * @return string
+     */
+    private function getDefaultHeading()
+    {
+        $segments = [];
+        $description = get_bloginfo('description');
+
+        // If this is something that should have a title, like a post or page,
+        // make the first part of the heading the title.
+        if ($this->isPost()) {
+            $segments[] = get_the_title($this->getId());
+        }
+
+        // If the site has a description and it is not the default description
+        // string, add it to the heading.
+        if ($description && $description != $this->defaultDescription) {
+            $segments[] = $description;
+        }
+
+        // The last part of the heading is the site name.
+        $segments[] = get_bloginfo('name');
+
+        // Return the various parts of the heading, combined into a single
+        // string and with each part separated by pipes.
+        return implode(' | ', $segments);
     }
 
     /**
@@ -179,7 +262,11 @@ class AcfSeo
             return $this->indexId;
         }
 
-        return $post->ID;
+        if (isset($post->ID)) {
+            return $post->ID;
+        }
+
+        return 0;
     }
 
     /**
@@ -189,6 +276,6 @@ class AcfSeo
      */
     private function isPost()
     {
-        return is_single() || is_page() || (is_home() && $this->indexId);
+        return is_singular() || is_page() || (is_home() && $this->indexId);
     }
 }

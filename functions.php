@@ -7,7 +7,7 @@ use Cgit\AcfSeo;
  *
  * @return string
  */
-function cgit_seo_heading() {
+function cgit_seo_heading($default = null) {
     $obj = AcfSeo::getInstance();
-    return $obj->getHeading();
+    return $obj->getHeading($default);
 }
