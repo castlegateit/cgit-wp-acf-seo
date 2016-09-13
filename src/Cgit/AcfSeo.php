@@ -12,12 +12,21 @@ class AcfSeo
     private static $instance;
 
     /**
+     * Page ID for "page for posts"
+     *
+     * @var int
+     */
+    private $indexId;
+
+    /**
      * Private constructor
      *
      * @return void
      */
     private function __construct()
     {
+        $this->indexId = get_option('page_for_posts');
+
         // Register custom fields
         add_action('acf/init', [$this, 'registerFields']);
 
@@ -108,7 +117,7 @@ class AcfSeo
      */
     public function optimizeTitle($title)
     {
-        $seo_title = get_field('seo_title');
+        $seo_title = get_field('seo_title', $this->getId());
 
         if (!$this->isPost() || !$seo_title) {
             return $title;
@@ -124,9 +133,7 @@ class AcfSeo
      */
     public function writeDescription()
     {
-        $postID = $this->getID();
-
-        $seo_description = get_field('seo_description', $postID);
+        $seo_description = get_field('seo_description', $this->getId());
 
         if (!$this->isPost() || !$seo_description) {
             return;
@@ -142,9 +149,7 @@ class AcfSeo
      */
     public function getHeading()
     {
-        $postID = $this->getID();
-
-        $seo_heading = get_field('seo_heading', $postID);
+        $seo_heading = get_field('seo_heading', $this->getId());
 
         if (!$this->isPost()) {
             return false;
@@ -157,15 +162,24 @@ class AcfSeo
         return $seo_heading;
     }
 
-    private function getID()
+    /**
+     * Return post or page ID
+     *
+     * This is usually the ID of the global post variable. However, if the site
+     * uses a static home page and we are looking at the blog index, this should
+     * return the ID of the "page for posts".
+     *
+     * @return int
+     */
+    private function getId()
     {
-        $postID = $post->ID;
+        global $post;
 
-        if (is_home()) {
-            $postID = get_option('page_for_posts');
+        if ($this->indexId && is_home()) {
+            return $this->indexId;
         }
 
-        return $postID;
+        return $post->ID;
     }
 
     /**
@@ -175,6 +189,6 @@ class AcfSeo
      */
     private function isPost()
     {
-        return is_single() || is_page() || is_home() && get_option('page_for_posts');
+        return is_single() || is_page() || (is_home() && $this->indexId);
     }
 }
