@@ -67,39 +67,46 @@ class AcfSeo
      */
     public function registerFields()
     {
+        $title = apply_filters('cgit_seo_title', 'SEO');
+        $position = apply_filters('cgit_seo_position', 'side');
+
+        $fields = apply_filters('cgit_seo_fields', [
+            [
+                'key' => 'seo_title',
+                'name' => 'seo_title',
+                'label' => 'Title',
+                'type' => 'text',
+            ],
+            [
+                'key' => 'seo_heading',
+                'name' => 'seo_heading',
+                'label' => 'Heading',
+                'type' => 'text',
+            ],
+            [
+                'key' => 'seo_description',
+                'name' => 'seo_description',
+                'label' => 'Description',
+                'type' => 'text',
+            ],
+        ]);
+
+        $location = apply_filters('cgit_seo_location', [
+            [
+                [
+                    'param' => 'post_type',
+                    'operator' => '!=',
+                    'value' => '0', // Show on all posts
+                ],
+            ],
+        ]);
+
         acf_add_local_field_group([
             'key' => 'cgit_wp_seo',
-            'title' => 'SEO',
-            'fields' => [
-                [
-                    'key' => 'seo_title',
-                    'name' => 'seo_title',
-                    'label' => 'Title',
-                    'type' => 'text',
-                ],
-                [
-                    'key' => 'seo_heading',
-                    'name' => 'seo_heading',
-                    'label' => 'Heading',
-                    'type' => 'text',
-                ],
-                [
-                    'key' => 'seo_description',
-                    'name' => 'seo_description',
-                    'label' => 'Description',
-                    'type' => 'text',
-                ],
-            ],
-            'location' => [
-                [
-                    [
-                        'param' => 'post_type',
-                        'operator' => '!=',
-                        'value' => '0', // Show on all posts
-                    ],
-                ],
-            ],
-            'position' => 'side',
+            'title' => $title,
+            'position' => $position,
+            'fields' => $fields,
+            'location' => $location,
         ]);
     }
 
