@@ -41,8 +41,7 @@ class AcfSeo
         add_filter('cgit_user_guide_sections', [$this, 'registerGuide'], 100);
 
         // Apply optimizations
-        add_filter('wp_title', [$this, 'optimizeTitle'], 999, 3);
-        add_filter('wp_title', [$this, 'sanitizeTitle'], 999, 3);
+        add_filter('pre_get_document_title', [$this, 'optimizeTitle']);
         add_action('wp_head', [$this, 'writeDescription'], 0);
     }
 
@@ -131,46 +130,15 @@ class AcfSeo
      * posts and pages.
      *
      * @param string $title
-     * @param string $sep
-     * @param string $location
      * @return string
      */
-    public function optimizeTitle($title, $sep, $location)
+    public function optimizeTitle($title)
     {
-        if ($title == '') {
-            // Empty title usually means the homepage
-            $title = get_the_title();
-        }
-
-        $seo_title = get_field('seo_title', $this->getId());
-
-        if (!$this->isPost() || !$seo_title) {
+        if (!$this->isPost()) {
             return $title;
         }
 
-        return $seo_title;
-    }
-
-    /**
-     * Strip default description from generate title
-     *
-     * Removes the default description and its adjacent separator character from
-     * the HTML title.
-     *
-     * @param string $title
-     * @param string $sep
-     * @param string $location
-     * @return string
-     */
-    public function sanitizeTitle($title, $sep, $location)
-    {
-        $pattern = $this->defaultDescription . ' ' . $sep;
-
-        if ($location == 'right') {
-            $pattern = $sep . ' ' . $this->defaultDescription;
-        }
-
-        return str_replace($pattern, '', $title);
+        return get_field('seo_title', $this->getId());
     }
 
     /**

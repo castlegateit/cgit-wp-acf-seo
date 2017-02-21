@@ -5,7 +5,7 @@
 Plugin Name: Castlegate IT WP ACF SEO
 Plugin URI: http://github.com/castlegateit/cgit-wp-acf-seo
 Description: Simple SEO fields for titles, headings, and descriptions.
-Version: 3.1
+Version: 3.2
 Author: Castlegate IT
 Author URI: http://www.castlegateit.co.uk/
 License: MIT
