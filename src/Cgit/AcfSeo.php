@@ -137,6 +137,11 @@ class AcfSeo
      */
     public function optimizeTitle($title, $sep, $location)
     {
+        if ($title == '') {
+            // Empty title usually means the homepage
+            $title = get_the_title();
+        }
+
         $seo_title = get_field('seo_title', $this->getId());
 
         if (!$this->isPost() || !$seo_title) {
